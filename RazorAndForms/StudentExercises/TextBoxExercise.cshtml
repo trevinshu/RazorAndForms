@@ -1,0 +1,66 @@
+﻿@{
+    //Processing always starts at top of page
+    Layout = "~/_LayoutMenu.cshtml";
+    //to capture a value from the text box we use Request.Form["controlname"]
+    //the value from a text box is a string
+    //if the control does not exist Request will return null
+    var leftSide = Request.Form["leftSide"];
+    var rightSide = Request.Form["rightSide"];
+
+    //to determine which button was pressed we need to look at the value of the button
+    //Note that both buttons are named the same
+    var buttonPressed = Request.Form["formButton"];
+    Page.Title = "Text Box Exercises";
+}
+
+@section banner
+{
+    <h1>Text Box Exercise</h1>
+}
+
+@*Create a 2 column form; each which with a label, textbox, submit button. Processing: determine under IsPost, which button was press and display the data of the appropriate text box and which button was pressed.
+
+    •	Both buttons will have the same name but different values. You can request.form the name of the buttons and tell which button was pressed by the value returned.
+    •	Add <div class="col-md-6"> to each set of controls*@
+
+
+<div>
+    @*IsPost is false when page first loads and true when it loads after a submit*@
+    @if (IsPost)
+    {
+        //If isPost is true we want to show the value(s) in the textbox(s)
+        //which button was pressed and show it's text box value
+        if (buttonPressed.Equals("left"))
+        {
+            <p>You pressed the left button which has the value entered of: @leftSide</p>
+        }
+        else
+        {
+            <p>You pressed the right button which has the value entered of: @rightSide</p>
+        }
+    }
+
+    @*Post sends data from the form to the server*@
+    @*Action is the page to load when submit is pressed*@
+    <form id="theForm" action="" method="post">
+        @*Using bootstrap columns*@
+        
+        <div class="row">
+            <div class="col-md-6">
+                <label id="leftSide">Left Data:</label>
+                <input type="text" name="leftSide" id="leftSideID" value="@leftSide" placeholder="enter some data" />
+                <button type="submit" name="formButton" value="left" class="btn btn-primary">Left Button</button>
+            </div>
+
+            <div class="col-md-6">
+                <label id="rightSide">Right Data:</label>
+                <input type="text" name="rightSide" id="rightSideID" value="@rightSide" placeholder="enter some data" />
+                <button type="submit" name="formButton" value="right" class="btn btn-primary">right Button</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+
+

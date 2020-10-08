@@ -1,0 +1,49 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>@Page.Title</title>
+    <script src="~/Scripts/jquery-3.3.1.js"></script>
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <script src="~/Scripts/bootstrap.js"></script>
+
+    @RenderSection("head", required: false)
+</head>
+<body>
+    <div class="container-fluid">
+        <!--This is the menu area-->
+        <div class="navbar navbar-default navbar-fixed-top">
+            <!--This will be the title of the menu-->
+            <div class="navbar-header">
+                <a class="navbar-brand" style="font-size:x-large"><strong>Razor Samples</strong></a>
+            </div>
+            <!--The menu root items-->
+            <ul class="nav navbar-nav">
+                <!--This will be a menu item-->
+                <li><a href="@Href("~/default.cshtml")">Home</a></li>
+                <!--This will be the drop down menu-->
+                <li class="dropdown">
+                    <!--This is the drop down root menu item-->
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Controls<b class="caret"></b></a>
+                    <!-- Drop down menu items-->
+                    <ul class="dropdown-menu">
+                        <li> <a href="@Href("~/Controls/TextBoxes.cshtml")">Text Boxes</a></li>
+                        <li> <a href="@Href("~/Controls/RadioButtonList.cshtml")">Radio Buttons List</a></li>
+                        <li> <a href="@Href("~/Controls/CheckBoxes.cshtml")">Check Boxes</a></li>
+                        <li> <a href="@Href("~/Controls/DropDownList.cshtml")">Drop Down List</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="jumbotron">
+            @RenderSection("Banner", required: true)
+        </div>
+    </div>
+    <br />
+    @RenderBody()
+    <hr style="line-height:5px" />
+    <br />
+    @RenderSection("ScriptLoop", required: true)
+    @RenderSection("Footer", required: true)
+</body>
+</html>

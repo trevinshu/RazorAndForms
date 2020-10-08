@@ -1,0 +1,52 @@
+﻿@{
+    Layout = "~/_LayoutMenu.cshtml";
+    Page.Title = "Radio Button List";
+    var languageChoice = Request.Form["languageGroup"];
+    var smartieChoice = Request.Form["smartieGroup"];
+    if(languageChoice==null)
+    {
+        languageChoice = "";
+    }
+    if (smartieChoice == null)
+    {
+        smartieChoice = "";
+    }
+
+
+}
+@section banner
+{
+    <h1>Radio Buttons</h1>
+}
+<div>
+    @if(IsPost)
+    {
+        <p>You chose the language @languageChoice and your favorite color smartie is @smartieChoice</p>
+    }
+
+
+    <div class="row">
+        <div class="col-md-offset-1">
+            <div>
+                <form id="theForm" action="" method="post">
+                    <label id="languageGroup">Select your favorite language</label><br />
+                    <input type="radio" name="languageGroup" value="C#" checked="@(languageChoice.Equals("C#")? true:false)" /> C#<br />
+                    <input type="radio" name="languageGroup" value="Visual Basic" checked="@(languageChoice.Equals("Visual Basic")? true:false)"/> VB<br />
+                    <input type="radio" name="languageGroup" value="Cobol"checked="@(languageChoice.Equals("Cobol")? true:false)" /> Cobol<br />
+                    <input type="radio" name="languageGroup" value="Fortran" checked="@(languageChoice.Equals("Fortran")? true:false)"/> Fortran#<br />
+                    <input type="radio" name="languageGroup" value="Pascal" checked="@(languageChoice.Equals("Pascal")? true:false)"/> Pascal<br />
+                    <br/><br/>
+                    <label id="smartieGroup">Select your favorite color smartie</label><br />
+                    <input type="radio" name="smartieGroup" value="Blue" checked="@(smartieChoice.Equals("Blue")? true:false)"/> Blue<br />
+                    <input type="radio" name="smartieGroup" value="Red" checked="@(smartieChoice.Equals("Red")? true:false)"/> Red<br />
+                    <input type="radio" name="smartieGroup" value="Green" checked="@(smartieChoice.Equals("Green")? true:false)"/> Green<br />
+                    <button type="submit" name="formButton" value="submit" class="btn btn-primary">Submit</button>
+
+                    @* Another radio button group with 3 options and show it as well with the language when you click submit *@
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+

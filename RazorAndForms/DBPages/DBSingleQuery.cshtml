@@ -1,0 +1,79 @@
+﻿@{
+
+    Layout = "~/_LayoutMenu.cshtml";
+    Page.Title = "Single query";
+    var searchArg = Request.Form["SearchArg"];
+    var buttonPressed = Request.Form["formButton"];
+
+    string regionID = "";
+    string regionDescription = "";
+
+    //the firstime the page loads searcharg will be null and that will crash the query.
+    //we will assign a dummy value of 0 instead
+    if(string.IsNullOrEmpty(searchArg))
+    {
+        searchArg = "0";
+    }
+
+    //Open a connection to the database
+    //Use the connectionstring name attribute value
+    var db = Database.Open("NWDB");
+
+    //Create a sql query to execute
+    //the parameter to search for will be represented by a placeholder
+    //placeholders are indexed (starting at 0)
+    var queryCommand = "Select RegionID, RegionDescription from region where regionid = @0";
+
+    //Execute the query using QuerySingle
+    //QuerySingle is used for retreiving only a single record
+    var results = db.QuerySingle(queryCommand, searchArg);
+}
+
+@section banner
+{
+    <h1>Single Query</h1>
+}
+
+@if(IsPost)
+{
+    if (buttonPressed.Equals("reset"))
+    {
+        regionID = "";
+        regionDescription = "";
+    }
+    else
+    {
+        //if QUerySingle returns no results the results are null
+        if(results==null)
+        {
+            <p>No record found for region id: @searchArg</p>
+        }
+        else
+        {
+            //PLace results in variables (use ordinal referance[0] or the name of the column
+            regionID = results[0].ToString();
+            regionDescription = results.regionDescription;
+        }
+    }
+}
+
+
+
+<form id="thForm" action="" method="post">
+    <div class="row">
+        <div class="col-md-3">
+            <label id="SearchArg">Enter a Region ID</label>
+            <input type="number" name="SearchArg" id="SearchArgID" value=""
+            placeholder="Enter a RegionID" step="1" min="1" /><br/><br/>
+            <button type="submit" name="formButton" value="submit" class="btn btn-primary">Search</button>
+            <button type="submit" name="formButton" value="reset" class="btn btn-primary">Reset</button>
+        </div>
+
+        <div class="col-md-9">
+            <label id="RegionID">RegionID: </label>
+            <input type="text" name="RegionID" value="@regionID" /><br />
+            <label id="RegionDescription">Description: </label>
+            <input type="text" name="RegionDescription" width="400" value="@regionDescription"/><br />
+        </div>
+    </div>
+</form>

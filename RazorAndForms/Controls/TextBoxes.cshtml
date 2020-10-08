@@ -1,0 +1,29 @@
+﻿@{
+    //Processing always starts at the top of the page
+    Layout = "~/_LayoutMenu.cshtml";
+    Page.Title = "Text Boxes";
+    //To capture a value from a text box use request.form["control name"]
+    //The value will be a string
+    //if the control does not exist Request will return NULL
+    var myName = Request.Form["yourName"];
+}
+@section banner
+{
+    <h1>Text Boxes</h1>
+}
+<div>
+    @* IsPost is false when the page is first loaded and true when loaded after a submit *@
+    @if (IsPost)
+    {
+        <p>Your name is: @myName</p>
+    }
+    <!--Create the form-->
+    @* Post sends the date from the form to the server *@
+    @* Action is the page to load when submit is pressed. "" means load the current page *@
+    <form id="theForm" action="" method="post">
+        <label>Your Name: </label>
+        <input type="text" name="yourName" id="yourNameId" value="@myName" placeholder="Please enter your name" />
+        <button type="submit" name="formButton" id="formButtonID" class="btn btn-primary" value="submit">Press me!</button>
+    </form>
+
+</div>

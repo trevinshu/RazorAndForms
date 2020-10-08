@@ -1,0 +1,41 @@
+﻿<!--
+ Create a asp.net web app(.net framework) project (empty project)
+Add a layout page ( layout page(razer v3 )
+Add a content page (Razor View page with layout)
+connect the layout page to the content page
+ Create 3 sections with some content in them (your name, your hobbies, your favorite bands)   
+ -->
+
+@{
+    Page.Title = "Hello";
+    Layout = "~/_LayoutMenu.cshtml";
+}
+
+@section banner
+{
+    <h1>Hello World</h1>
+}
+
+<div>
+    This is content that gets rendered in the RenderBody section of the layout page.
+</div>
+
+@section ScriptLoop
+{
+    @for (var i = 1; i <= 10; i++)
+    {
+        <p>
+            Hello! Welcome number @i
+        </p>
+    }
+}
+
+@section footer
+{
+    <p>
+        &copy; CPSC1517, NAIT. Todays date is @DateTime.Today.ToLongDateString()
+    </p>
+}
+
+
+
