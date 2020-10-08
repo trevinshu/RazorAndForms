@@ -32,6 +32,20 @@
     <div class="container">
         <span style="font-size: x-large"><strong>Products for @categoryName</strong></span>
         @*Generate HTML to display the grid*@
-        @gridInstance.GetHtml();
+        @gridInstance.GetHtml(
+    tableStyle: "table table-bordered table-striped table-hover",
+    mode: WebGridPagerModes.All,
+    firstText: "All starts here!",
+    lastText: "Nothing to see!",
+    nextText: "Move Forward!",
+    previousText: "Back up!",
+
+    columns: gridInstance.Columns(
+        gridInstance.Column(columnName: "ProductID", header: "ID"),
+        gridInstance.Column(columnName: "ProductName", header: "Product"),
+        gridInstance.Column(columnName: "UnitPrice", header: "Price", format: (item) => item.UnitPrice.ToString("0.00")),
+        gridInstance.Column(columnName: "UnitsInStock", header: "QOH"),
+        gridInstance.Column(columnName: "Discontinued", header: "Disc",
+        format:@<input name="Discontinued" , type="checkbox" value="@item.Discontinued" @(item.Discontinued == true ? "checked" : "" ) disabled /> )));
     </div>
 </div>
