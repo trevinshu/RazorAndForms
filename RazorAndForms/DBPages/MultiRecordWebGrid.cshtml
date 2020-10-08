@@ -1,8 +1,37 @@
 ﻿@{
     Layout = "~/_LayoutMenu.cshtml";
     Page.Title = "WebGrid";
+
+    //cid is name of the value being passed through the URL
+    //QueryString returns null if value doesn't exist
+    var categoryID = Request.QueryString["cid"];
+
+    if(string.IsNullOrEmpty(categoryID))
+    {
+        Response.Redirect("MultiRecordQuery.cshtml");
+    }
+
+    var db = Database.Open("NWDB");
+    var scalarCommand = "Select CategoryName from categories where categoryid = @0";
+
+    //QueryValue returns a single value not a record
+    var categoryName = db.QueryValue(scalarCommand, categoryID);
+
+    var queryCommand = "Select ProductID, ProductName, UnitPrice, UnitsInStock, Discontinued from products where categoryID =@0 order by ProductName";
+    var results = db.Query(queryCommand, categoryID);
+
+    //Create an instance of a webgrid
+    var gridInstance = new WebGrid(results, rowsPerPage: 5);
 }
 
 @section  banner {
     <h1>Database: WebGrid</h1>
  }
+
+<div>
+    <div class="container">
+        <span style="font-size: x-large"><strong>Products for @categoryName</strong></span>
+        @*Generate HTML to display the grid*@
+        @gridInstance.GetHtml();
+    </div>
+</div>
