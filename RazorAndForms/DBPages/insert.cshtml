@@ -1,0 +1,174 @@
+﻿@*Create DDL for Supplier and Category values that only contain valid suppliers and categories (from the parent tables).
+    Put in try/catch*@
+
+
+@{
+    Layout = "~/_LayoutMenu.cshtml";
+    Page.Title = "Insert";
+
+    var theButton = Request.Form["formButton"];
+
+    var productName = "";
+    var supplier = "0";
+    var category = "0";
+    var quantityPerUnit = "";
+    var unitPrice = "";
+    var unitsInStock = "";
+    var unitsOnOrder = "";
+    var reorderLevel = "";
+
+    var db = Database.Open("NWDB");
+
+    var supplierQuery = "Select SupplierID, CompanyName from suppliers order by CompanyName asc";
+    var categoryQuery = "Select CategoryID, CategoryName from categories order by categoryName asc";
+
+    var suppliers = db.Query(supplierQuery);
+    var categories = db.Query(categoryQuery);
+
+    //Validators
+    Validation.Add("ProductName",
+        Validator.Required("Product Names is a required field"),
+        Validator.StringLength(40, 1, "Product Names must be less than 40 characters"));
+
+    //quantityperunit must be less that 20 characters
+    Validation.Add("QuantityPerUnit",
+        Validator.StringLength(20, 0, "QuantityPerUnit must be less than 20 characters"));
+
+    Validation.Add("UnitPrice",
+        Validator.Range(0, double.MaxValue, "Unit price must be greater than 0"));
+    //Although supplierID and CategoryID are nullable in the DB lets assume they are required
+    Validation.Add("SupplierID",
+        Validator.Range(1, int.MaxValue, "Must choose a supplier"));
+    Validation.Add("CategoryID",
+        Validator.Range(1, int.MaxValue, "Must choose a category"));
+
+
+
+
+}
+
+@section banner
+    {
+    <h1>CRUD: INSERT</h1>}
+@if (IsPost)
+{
+    //if reset clear the form
+    //otherwise retrieve the form data in to the variables
+    //create the db object pointing to NWDB
+    //create an insertCommand variable with an insert statement in it and @0, @1 etc. placeholders for all the values (9 placeholders)
+    if (theButton.Equals("reset"))
+    {
+        <p>Form Cleared</p>
+    }
+    else
+
+    {
+        productName = Request.Form["productName"];
+        supplier = Request.Form["supplierID"];
+        category = Request.Form["categoryID"];
+        quantityPerUnit = Request.Form["quantityPerUnit"];
+        unitPrice = Request.Form["unitPrice"];
+        unitsInStock = Request.Form["unitsInStock"];
+        unitsOnOrder = Request.Form["unitsOnOrder"];
+        reorderLevel = Request.Form["reorderLevel"];
+
+        //Run the validators and display error message OR insert the record.
+        if (Validation.IsValid())
+        {
+            try
+            {
+                var insertCommand = "Insert into products(ProductName,SupplierID,CategoryID,QuantityPerUnit,UnitPrice,UnitsInStock,UnitsOnOrder,ReorderLevel,Discontinued) values (@0,@1,@2,@3,@4,@5,@6,@7,@8)";
+
+                //Execute the insert
+                db.Execute(insertCommand, productName,
+                    supplier.Equals("0") ? null : supplier,
+                     category.Equals("0") ? null : category,
+                     string.IsNullOrEmpty(quantityPerUnit) ? null : quantityPerUnit,
+                     string.IsNullOrEmpty(unitPrice) ? null : unitPrice,
+                     string.IsNullOrEmpty(unitsInStock) ? null : unitsInStock,
+                     string.IsNullOrEmpty(reorderLevel) ? null : reorderLevel,
+                     string.IsNullOrEmpty(unitsOnOrder) ? null : unitsOnOrder,
+                    0);
+                <p><span style="color:green"><strong>New Product Added! :)</strong></span></p>
+            }
+            catch (Exception ex)
+            {
+                <p>
+                    <span style="color:firebrick"> @ex.Message</span>
+                </p>
+            }
+        }
+    }
+}
+@* You can display your validator messages in a summary group. It is displayed in bulletd list*@
+@*  @Html.ValidationSummary()*@
+<form id="theForm" action="" method="post">
+    <div class="row">
+        <div class="col-md-5 text-right">
+            <label id="ProductName">Product Name:</label><br />
+            <label id="SupplierID">Supplier ID:</label><br />
+            <label id="CategoryID">Category ID:</label><br />
+            <label id="QuantityPerUnit">Quantity Per Unit:</label><br />
+            <label id="UnitPrice">UnitPrice:</label><br />
+            <label id="UnitsInStock">Units In Stock:</label><br />
+            <label id="UnitsOnOrder">Units On Order:</label><br />
+            <label id="ReOrderLevel">ReOrder Level:</label><br />
+            <label id="Discontinued">Discontinued:</label><br />
+        </div>
+        <div class="col-md-5">
+            <input name="ProductName" type="text" value=" @productName" />@Html.ValidationMessage("ProductName")<br />
+            <select id="SupplierListID" name="SupplierID">
+                <option value="0">Select a supplier</option>
+                @*@((item.supplierID.ToString())==supplierId ? "selected" : "")*@
+                @foreach (var item in suppliers)
+                {
+                    //if the supplierid row we are about to create matches the supplierid that was selected before the submit
+                    // then
+                    if (item.supplierID.ToString() == supplier)
+                    {
+                        <option value="@item.SupplierID" selected>@item.CompanyName</option>
+                    }
+                    else
+                    {
+                        <option value="@item.SupplierID"> @item.CompanyName </option>
+                    }
+                }
+            </select>@Html.ValidationMessage("SupplierID")<br />
+
+            <select id="CategoryListID" name="CategoryID">
+                <option value="0">Select a category</option>
+                @foreach (var item in categories)
+                {
+                    if (item.categoryID.ToString() == category)
+                    {
+                        <option value="@item.CategoryID" selected>@item.CategoryName</option>
+                    }
+                    else
+                    {
+                        <option value="@item.CategoryID">@item.CategoryName</option>
+                    }
+                }
+            </select>@Html.ValidationMessage("CategoryID")<br />
+
+            <input name="QuantityPerUnit" type="text" value=" @quantityPerUnit" /><br />
+            <input name="UnitPrice" type="text" value=" @unitPrice" /><br />
+            <input name="UnitsInStock" type="text" value=" @unitsInStock" /><br />
+            <input name="UnitsOnOrder" type="text" value=" @unitsOnOrder" /><br />
+            <input name="ReOrderLevel" type="text" value=" @reorderLevel" /><br />
+            <input name="Discontinued" type="checkbox" disabled /><br />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-5 text-center">
+            <button type="submit" name="formButton" value="submit" class="btn btn-primary" style="width:90px">
+                ADD
+            </button> &nbsp;&nbsp;
+            <button type="submit" name="formButton" value="reset" class="btn btn-primary" style="width:90px">
+                CLEAR
+            </button>
+        </div>
+    </div>
+</form>
+
+
+

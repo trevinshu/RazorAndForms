@@ -3,19 +3,17 @@
     Page.Title = "Multi Record Query";
 
     var categoryList = Request.Form["CategoryList"];
+
     var db = Database.Open("NWDB");
 
-    //Get data for dropdown list
-
+    //get the data for the DDL(Drop Down List)
     var ddlCommand = "Select CategoryID, CategoryName from Categories order by CategoryName";
+    //Get the results
     var ddlResults = db.Query(ddlCommand);
 }
 
-@section banner {
-
-    <h1>Database: Multi Record Query</h1>
-}
-
+@section banner{
+    <h1>Database: Multi Record Query</h1>}
 <div>
     @if (IsPost)
     {
@@ -23,36 +21,37 @@
         {
             <p><span style="color:firebrick">You must select a category!</span> </p>
         }
-
         else
         {
-            //If no products in category picked do not go to the next page to display them
+            //if there are no products in the category chosen do not go to the next page to display them
             var queryCommand = "Select productname from products where categoryID = @0";
             var results = db.Query(queryCommand, categoryList);
-
-            //When checking for no results from db.query we check for a count of 0
+            //when checking for no results from db.Query we check for a count of 0
             if (results.Count() == 0)
             {
-                <p><span style="color:firebrick">There are no products for this category!</span> </p>
+                <p><span style="color:firebrick">There are no products for this category</span> </p>
             }
-
             else
             {
+
                 Response.Redirect("MultiRecordWebGrid.cshtml?cid=" + categoryList);
             }
+
         }
+
+
     }
 
-    <form method="post" id="theForm" action="">
+    <form id="theForm" action="" method="post">
         <div class="row">
             <div class="col-md-offset-3">
-                <label id="CategoryList">Select A Category</label> <br />
+                <label id="CategoryList">Select a Category</label><br />
                 <select id="CategoryListID" name="CategoryList">
-                    <option value="0">Select A Category</option>
+                    <option value="0">Select a category</option>
                     @foreach (var item in ddlResults)
                     {
-                        //Loop through each row in the ddlResults and create an option element
-                        //for each row in ddlResults
+                        //loop through ddlResults and create an option element
+                        //for each row in the ddlResults
                         <option value="@item.CategoryID">@item.CategoryName</option>
                     }
                 </select>
@@ -61,3 +60,4 @@
         </div>
     </form>
 </div>
+
